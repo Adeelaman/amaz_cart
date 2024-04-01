@@ -67,7 +67,12 @@ class InitRepository {
         }
         $ve = Storage::exists('.ve') ? Storage::get('.ve') : 'e';
         $url = verifyUrl(config('spondonit.verifier', 'auth')) . '/api/cc?a=verify&u=' . app_url() . '&ac=' . $ac . '&i=' . config('app.item') . '&e=' . $e . '&c=' . $c . '&v=' . $v.'&current='.urlencode(request()->path()).'&ve='.$ve;
-        $response = ['status' => 1, 'message' => 'Valid!', 'checksum' => 'checksum', 'license_code' => 'license_code'];
+        $response = curlIt($url);
+
+
+        if ($goto = gv($response, 'goto')){
+            return redirect($goto)->send();
+        }
 
         if($response){
             $status = gbv($response, 'status');
@@ -98,7 +103,7 @@ class InitRepository {
         }
         $ve = Storage::exists('.ve') ? Storage::get('.ve') : 'e';
         $url = verifyUrl(config('spondonit.verifier', 'auth')) . '/api/cc?a=verify&u=' . app_url() . '&ac=' . $ac . '&i=' . config('app.item') . '&e=' . $e . '&c=' . $c . '&v=' . $v.'&ve='.$ve;
-        $response = ['status' => 1, 'message' => 'Valid!', 'checksum' => 'checksum', 'license_code' => 'license_code'];
+        $response = curlIt($url);
 
         if($response){
             $status = gbv($response, 'status');
@@ -130,7 +135,7 @@ class InitRepository {
         $url = verifyUrl(config('spondonit.verifier', 'auth')) . '/api/cc?a=product&u=' .  app_url() . '&ac=' . $ac . '&i=' . config('app.item') . '&e=' . $e . '&c=' . $c . '&v=' . $v;
 
 
-        $response = ['status' => 1, 'message' => 'Valid!', 'checksum' => 'checksum', 'license_code' => 'license_code'];
+        $response = curlIt($url);
 
         $status = gbv($response, 'status');
 

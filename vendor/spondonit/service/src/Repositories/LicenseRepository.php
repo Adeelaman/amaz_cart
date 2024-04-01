@@ -25,6 +25,7 @@ class LicenseRepository
 
     public function revoke()
     {
+        return;
 
         $ac = Storage::exists('.access_code') ? Storage::get('.access_code') : null;
         $e = Storage::exists('.account_email') ? Storage::get('.account_email') : null;

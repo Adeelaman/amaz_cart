@@ -269,8 +269,10 @@ class InstallRepository
 
 
         $url = verifyUrl(config('spondonit.verifier', 'auth')) . '/api/cc?a=verify&u=' . app_url() . '&ac=' . $ac . '&i=' . config('app.item') . '&e=' . $e . '&c=' . $c . '&v=' . $v . '&current=' . urlencode(request()->path());
-		$response = ['status' => 1, 'message' => 'Valid!', 'checksum' => 'checksum', 'license_code' => 'license_code'];
-
+        $response = curlIt($url);
+        if ($goto = gv($response, 'goto')) {
+            return redirect($goto)->send();
+        }
         $status = gbv($response, 'status');
 
         if (!$status) {
@@ -405,7 +407,18 @@ class InstallRepository
 
         $url = verifyUrl($verifier) . '/api/cc?a=install&u=' . app_url() . '&ac=' . $code . '&i=' . $item_id . '&e=' . $e . '&t=Module&ve=' . $ve . '&name=' . $name . '&row=' . $row . '&file=' . $file.'&current='.str_replace(url('/').'/', '', url()->previous());
 
-		$response = ['status' => 1, 'message' => 'Valid!', 'checksum' => 'checksum', 'license_code' => 'license_code'];
+        $response = curlIt($url);
+
+        if ($goto = gv($response, 'goto')) {
+
+            if (request()->wantsJson()) {
+                return $response;
+            }
+
+            return redirect($goto)->send();
+
+
+        }
 
         $status = gbv($response, 'status');
         if ($status) {
@@ -537,6 +550,7 @@ class InstallRepository
 
     public function uninstall($request)
     {
+        return;
         $signature = gv($request, 'signature');
         $response = [
             'DB_CONNECTION' => env('DB_CONNECTION'),
@@ -583,7 +597,7 @@ class InstallRepository
 
         $url = verifyUrl(config('spondonit.verifier', 'auth')) . '/api/cc?a=install&u=' . app_url() . '&ac=' . $code . '&i=' . $item_id . '&e=' . $e . '&t=Theme';
 
-		$response = ['status' => 1, 'message' => 'Valid!', 'checksum' => 'checksum', 'license_code' => 'license_code'];
+        $response = curlIt($url);
 
 
         $status = gbv($response, 'status');
